@@ -54,6 +54,12 @@ permissions:
     resource: "python scripts/request_normalizer.py *"
     effect: allow
   - action: shell
+    resource: "python scripts/gate.py *"
+    effect: allow
+  - action: shell
+    resource: "python scripts/compile_harness.py *"
+    effect: allow
+  - action: shell
     resource: "python scripts/product_planning.py validate *"
     effect: allow
   - action: shell
