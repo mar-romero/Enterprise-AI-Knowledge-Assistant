@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "discovery_id": "README-BOOTSTRAP-001",
+  "status": "approved",
+  "classification": "TASK",
+  "title": "Enterprise AI Copilot public README bootstrap",
+  "refined_problem": "After the repository was cleaned to harness-only infrastructure, the root README still documents the agent harness instead of the new product. The repository needs a public, English, product-first README for Enterprise AI Copilot, while the existing harness operator documentation must be preserved under docs/ without losing its instructions.",
+  "original_request": {
+    "language": "es",
+    "text": "quiero limpiar todo repositorio ... (proyecto nuevo) ... Ahora lo elimino pero mientras creame el readme del proyecto ... ya agregaste el readme?"
+  },
+  "target_users": [
+    "Public portfolio reviewers and recruiters",
+    "Collaborating engineers on the new repository"
+  ],
+  "outcomes": [
+    "Repository root communicates the Enterprise AI Copilot product clearly in English",
+    "Harness operator documentation remains discoverable under docs/"
+  ],
+  "success_metrics": [
+    "README.md renders with all agreed sections and no broken relative links",
+    "docs/HARNESS.md preserves the previous operator content with corrected links"
+  ],
+  "scope": {
+    "in": [
+      "Replace root README.md with the approved English product README",
+      "Move previous harness README content to docs/HARNESS.md with adjusted relative links"
+    ],
+    "out": [
+      "Any backend or frontend implementation",
+      "CI workflows, badges or infrastructure",
+      "Product code, tasks beyond this documentation change",
+      "Renaming the repository"
+    ]
+  },
+  "mvp": {
+    "goal": "A publication-quality README that establishes the product identity and preserves harness documentation.",
+    "includes": [
+      "Product overview and example interaction",
+      "Target AWS architecture table marked as proposed, not implemented",
+      "Differentiators: multi-tenant security, verifiable answers, controlled actions, evaluation, observability",
+      "Placeholder Development section"
+    ],
+    "excludes": [
+      "Learning program or 90-day roadmap references",
+      "Portfolio deliverables section",
+      "Spanish translation"
+    ]
+  },
+  "success_metrics_note": "Single bounded documentation outcome; verified by content checks and link integrity.",
+  "assumptions": [
+    "Product name is Enterprise AI Copilot as decided by the user",
+    "README language is English as decided by the user",
+    "Positioning is product-first, without learning-program framing"
+  ],
+  "open_questions": [],
+  "challenges": [
+    "Relative links inside docs/HARNESS.md must be corrected for the new location"
+  ],
+  "work_items": [],
+  "tasks": [
+    {
+      "id": "README-001",
+      "title": "Write Enterprise AI Copilot product README and relocate harness README",
+      "description": "Replace the root README.md with the approved English product-first README for Enterprise AI Copilot. Preserve the previous root README (Portable Agent Engineering Harness operator documentation) as docs/HARNESS.md, correcting internal relative links for the new location. No mention of the learning program or roadmaps; architecture marked as proposed.",
+      "acceptance_criteria": [
+        "Root README.md contains sections: title, overview, Example, Target architecture (AWS), Differentiators, Development",
+        "Target architecture is explicitly marked as proposed and not yet implemented",
+        "Differentiators cover multi-tenant security, verifiable answers with citations and abstention, controlled actions with confirmation, automatic evaluation, observability and cost control",
+        "No reference to a learning program, 90-day roadmap, or portfolio deliverables exists in README.md",
+        "The previous README operator content exists at docs/HARNESS.md with relative links corrected",
+        "All relative Markdown links in README.md and docs/HARNESS.md resolve",
+        "No secrets, tokens or confidential data in either file"
+      ],
+      "dependencies": [],
+      "files": [
+        "README.md",
+        "docs/HARNESS.md"
+      ],
+      "size": "S",
+      "value": 4,
+      "dependency_unlock": 3,
+      "risk_reduction": 2,
+      "urgency": 4,
+      "confidence": 5,
+      "risk_factors": {}
+    }
+  ],
+  "research_rdd": {
+    "mode": "none",
+    "ready": true,
+    "reason": "Bounded documentation change with no domain, external-contract or architecture unknowns."
+  },
+  "approval_attestation": {
+    "approved_by": "repository owner in harness session",
+    "date": "2026-11-03",
+    "recorded_decisions": [
+      "name: Enterprise AI Copilot",
+      "language: English",
+      "positioning: product-first",
+      "cleanup of tasks/planning/specs/sprints/benchmarks/evals and .harness/overlays confirmed and executed by owner"
+    ]
+  }
+}

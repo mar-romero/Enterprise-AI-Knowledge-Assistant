@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "discovery_id": "COMMIT-PR-NARRATIVE-SKILL-001",
+  "status": "approved",
+  "classification": "TASK",
+  "title": "Add commit-pr-narrative skill to the harness canonical skills",
+  "refined_problem": "The harness has pr-creation (PR structure and model routing) and work-unit-commits (small coherent units), but no skill that mandates the full narrative a reviewer and future readers need: what was done, how, why, alternatives rejected, trade-offs, and the evidence behind the claim. The owner wants commit/PR storytelling as a first-class part of the flow, with professional best practices, without duplicating existing skills.",
+  "original_request": {
+    "language": "es",
+    "text": "grea un agente o skill para ahcer los mejores commit y pr, explicando que se realizo y como y porque, bien detallado y con las buenas practicas y esta skill agregalas al fluj, tambien agregagentes que crean que hagan falta y con esto subimos todo"
+  },
+  "target_users": [
+    "Implementer agents producing work-unit commits",
+    "Reviewers and future readers auditing history",
+    "The repository owner building a professional portfolio"
+  ],
+  "outcomes": [
+    "A canonical, portable skill commit-pr-narrative committed under .agents/skills/ and compiled into provider providers adapters",
+    "Every routed task's final commit and PR narrative explains what was done, how, why and with which evidence"
+  ],
+  "success_metrics": [
+    "python scripts/compile_harness.py --check passes after regeneration",
+    "harness smoke tests still pass with the new skill registered"
+  ],
+  "scope": {
+    "in": [
+      "Create canonical skill .agents/skills/commit-pr-narrative/SKILL.md with frontmatter, when-to-use, narrative contract, commit message contract, PR body contract, failure modes and anti-patterns",
+      "Register the skill in harness/manifest.yaml",
+      "Regenerate provider adapters with scripts/compile_harness.py"
+    ],
+    "out": [
+      "New provider/agent types",
+      "Changes to task_router, gates, policies or evidence schemas",
+      "Baseline commit/push of unrelated files"
+    ]
+  },
+  "mvp": {
+    "goal": "One new canonical skill registered in the manifest and compiled, with narrative contracts delegating mechanics to work-unit-commits and pr-creation.",
+    "includes": [
+      "Narrative sections: What was done / How it was done / Why this way (alternatives and trade-offs) / Evidence",
+      "Conventional Commits titles and scope-by-risk guidance",
+      "PR body aligned with pr-creation sections plus explicit how/why narrative",
+      "Anti-patterns: raw diffs, invented tests, secrets, huge mixed-purpose commits"
+    ],
+    "excludes": [
+      "New agent types",
+      "Runtime policy changes"
+    ]
+  },
+  "success_metrics_placeholder": null,
+  "assumptions": [
+    "No new agents are warranted: the existing implementer/reviewer/verifier roster covers commit and PR authoring; adding agents would violate the no-ceremonial-agents policy"
+  ],
+  "open_questions": [],
+  "challenges": [
+    "Manifest registration and generated adapters must be updated through scripts/compile_harness.py, never edited by hand"
+  ],
+  "work_items": [],
+  "tasks": [
+    {
+      "id": "PR-NARRATIVE-001",
+      "title": "Author commit-pr-narrative canonical skill, register and compile",
+      "description": "Create .agents/skills/commit-pr-narrative/SKILL.md (English, frontmatter name/description, sections: When to use, Relationship to existing skills, Commit narrative contract, Commit message contract, Pull request narrative contract, Best practices, Anti-patterns), register it in harness/manifest.yaml skills list, run scripts/compile_harness.py to regenerate provider adapters, and verify with scripts/compile_harness.py --check plus a focused smoke check that the skill is discoverable.",
+      "acceptance_criteria": [
+        ".agents/skills/commit-pr-narrative/SKILL.md exists with valid YAML frontmatter (name, description) and the narrative sections agreed",
+        "The narrative contract requires What/How/Why (with rejected alternatives and trade-offs) and Evidence in every commit message body above trivial, and in every PR body",
+        "Mechanical guidance references work-unit-commits and pr-creation instead of duplicating them",
+        "harness/manifest.yaml registers the skill commit-pr-narrative",
+        "python scripts/compile_harness.py regenerates provider adapters including the compiled wrapper for the new skill, and --check passes",
+        "No secrets or invented commands",
+        "Focused verification that the new skill name appears in the compiled artifacts"
+      ],
+      "dependencies": [],
+      "files": [
+        ".agents/skills/commit-pr-narrative/SKILL.md",
+        "harness/manifest.yaml",
+        ".claude/skills/commit-pr-narrative/SKILL.md"
+      ],
+      "size": "S",
+      "value": 4,
+      "dependency_unlock": 3,
+      "risk_reduction": 3,
+      "urgency": 3,
+      "confidence": 4,
+      "risk_factors": {}
+    }
+  ],
+  "research_rdd": {
+    "mode": "none",
+    "ready": true,
+    "reason": "Bounded documentation/config addition with all context available in-repo (two sibling skills provide the contract base)."
+  },
+  "approval_attestation": {
+    "approved_by": "repository owner in harness session",
+    "date": "2026-11-03",
+    "recorded_decisions": [
+      "skill-based solution instead of a new agent type (no ceremonial agents)",
+      "narrative layer separates from mechanical pr-creation and work-unit-commits skills"
+    ]
+  }
+}

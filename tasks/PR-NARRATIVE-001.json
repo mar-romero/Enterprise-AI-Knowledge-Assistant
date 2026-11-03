@@ -1,0 +1,53 @@
+{
+  "id": "PR-NARRATIVE-001",
+  "description": "Create .agents/skills/commit-pr-narrative/SKILL.md (English, frontmatter name/description, sections: When to use, Relationship to existing skills, Commit narrative contract, Commit message contract, Pull request narrative contract, Best practices, Anti-patterns), register it in harness/manifest.yaml skills list, run scripts/compile_harness.py to regenerate provider adapters, and verify with scripts/compile_harness.py --check plus a focused smoke check that the skill is discoverable.",
+  "acceptance_criteria": [
+    ".agents/skills/commit-pr-narrative/SKILL.md exists with valid YAML frontmatter (name, description) and the narrative sections agreed",
+    "The narrative contract requires What/How/Why (with rejected alternatives and trade-offs) and Evidence in every commit message body above trivial, and in every PR body",
+    "Mechanical guidance references work-unit-commits and pr-creation instead of duplicating them",
+    "harness/manifest.yaml registers the skill commit-pr-narrative",
+    "python scripts/compile_harness.py regenerates provider adapters including the compiled wrapper for the new skill, and --check passes",
+    "No secrets or invented commands",
+    "Focused verification that the new skill name appears in the compiled artifacts"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": false,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    ".agents/skills/commit-pr-narrative/SKILL.md",
+    "harness/manifest.yaml",
+    ".claude/skills/commit-pr-narrative/SKILL.md"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "COMMIT-PR-NARRATIVE-SKILL-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/COMMIT-PR-NARRATIVE-SKILL-001.json"
+  },
+  "planning": {
+    "title": "Author commit-pr-narrative canonical skill, register and compile",
+    "size": "S",
+    "dependencies": [],
+    "priority_score": 3.45
+  }
+}

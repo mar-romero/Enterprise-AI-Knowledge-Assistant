@@ -1,0 +1,52 @@
+{
+  "id": "README-001",
+  "description": "Replace the root README.md with the approved English product-first README for Enterprise AI Copilot. Preserve the previous root README (Portable Agent Engineering Harness operator documentation) as docs/HARNESS.md, correcting internal relative links for the new location. No mention of the learning program or roadmaps; architecture marked as proposed.",
+  "acceptance_criteria": [
+    "Root README.md contains sections: title, overview, Example, Target architecture (AWS), Differentiators, Development",
+    "Target architecture is explicitly marked as proposed and not yet implemented",
+    "Differentiators cover multi-tenant security, verifiable answers with citations and abstention, controlled actions with confirmation, automatic evaluation, observability and cost control",
+    "No reference to a learning program, 90-day roadmap, or portfolio deliverables exists in README.md",
+    "The previous README operator content exists at docs/HARNESS.md with relative links corrected",
+    "All relative Markdown links in README.md and docs/HARNESS.md resolve",
+    "No secrets, tokens or confidential data in either file"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": false,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "README.md",
+    "docs/HARNESS.md"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "README-BOOTSTRAP-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/README-BOOTSTRAP-001.json"
+  },
+  "planning": {
+    "title": "Write Enterprise AI Copilot product README and relocate harness README",
+    "size": "S",
+    "dependencies": [],
+    "priority_score": 3.45
+  }
+}
