@@ -57,6 +57,49 @@ Opt-in integration test:
 set AWS_INTEGRATION=1 && python -m pytest tests -q -k Integration
 ```
 
+## RAG answer flow (backend/app/rag.py)
+
+POST /answer implements planning decision D8: a local lexical retriever
+(offline, no randomness) with a **retrieval-only abstention gate that runs
+BEFORE the LLM call**, so generation only happens when evidence exists.
+
+Retriever mechanics:
+
+- Documents uploaded through `documents.py` are served by
+  `LocalDirectoryStorage`: only `.txt`/`.md` files whose stored bytes decode
+  as UTF-8 (and are non-empty after decoding) are text-retrievable. PDFs and
+  binary bytes are treated as non-retrievable, and a registry record without
+  its content file contributes nothing.
+- Text is split into blank-line paragraphs (`\n\s*\n`); chunks without any
+  alphanumeric token are dropped. Each chunk gets the locator
+  `<sha256>--chunk-<n>` where `n` is 1-based in document order.
+- Scoring is deterministic case-insensitive token overlap:
+  `score(chunk) = (distinct query tokens present in the chunk) / (distinct
+  query tokens)`; a question with no alphanumeric tokens scores 0.
+  Candidates sort by score descending, ties by locator ascending, and the
+  route keeps the top `TOP_K = 4` chunks (`THRESHOLD = 0.5`).
+- `BedrockLLM` from `app/llm.py` wraps generation behind the `AnsweringLLM`
+  protocol; the `Retriever` protocol (`retrieve(question, k) -> list[Chunk]`)
+  is the integration slot where a Bedrock Knowledge Bases retriever can be
+  added later as another implementation (`rag.configure_retriever`).
+- Like `documents.py`, the flow is single-process: no concurrency guarantee.
+
+Abstention semantics (`INSUFFICIENT_EVIDENCE`):
+
+- Registry empty, zero retrievable chunks, or best chunk score below
+  `THRESHOLD` → HTTP 200 with
+  `{"answer": "", "citations": [], "abstained": true,
+  "reason": "INSUFFICIENT_EVIDENCE"}`; the LLM is never called.
+- Otherwise HTTP 200 with `{"answer": <LLM text>, "citations": [...],
+  "abstained": false}`; citations reference only retrieved chunks whose
+  sha256 is still present in the current storage registry (never absent
+  documents).
+- `/answer` requires an LLM to be configured via `rag.configure_llm(...)`:
+  in the default runtime (nothing configured in `app/main.py`) it returns
+  HTTP 500 "LLM not configured; set via rag.configure_llm or the
+  AWS_INTEGRATION integration path". No boto3 is imported at module level;
+  offline tests inject fakes through FastAPI dependency overrides.
+
 ## Endpoints
 
 ### POST /documents
@@ -80,6 +123,16 @@ Semantics:
 
 Returns the list of stored metadata records (`id`, `filename`, `sha256`,
 `size`, `uploaded_at`, `duplicate`) as JSON; empty list before any upload.
+
+### POST /answer
+
+JSON body `{"question": "..."}`:
+
+- `400` `missing question`: the field is absent, not a string, or blank.
+- `200`: `{"answer", "citations", "abstained"}` per the semantics of the
+  "RAG answer flow (backend/app/rag.py)" section above (with
+  `reason: "INSUFFICIENT_EVIDENCE"` on abstention). Each citation carries
+  `{doc_id, filename, locator, score}`.
 
 ## Storage (`backend/app/documents.py`)
 
