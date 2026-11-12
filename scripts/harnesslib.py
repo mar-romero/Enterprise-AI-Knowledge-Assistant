@@ -300,18 +300,25 @@ def validate_provider_active(provider: str, active: dict, root: Path | None = No
         raise ValueError('provider model selections file is missing')
     selection_payload = validate_model_selections(provider, task_id, selections_path, root)
     selection_hash = sha256_file(selections_path)
+    # Per-agent binding view: compare each bound agent's entry against the
+    # file, ignoring runtime-persisted extra agents (see comment below).
+    bound = {s.get('agent'): s for s in (active.get('selections') or [])}
+    file_sel = {s.get('agent'): s for s in (selection_payload.get('selections') or [])}
     if active.get('model_selections_sha256') != selection_hash:
-        # The OpenCode runtime re-serializes model-selections.json
-        # payload-identically when agent model state updates, which invalidates
-        # the stored byte hash even though the selections are semantically
-        # unchanged. The semantic selections equality below (and at the next
-        # check) remains the tamper line: a byte-level drift that also changes
-        # the selections content still fails here.
+        # Dual-writer reality: the activation writes the binding payload
+        # (task-scoped selections), while the OpenCode runtime persists its
+        # own cross-task agent-model state -- e.g. a stale 'verifier' entry
+        # from a previous task -- into the same model-selections.json file,
+        # re-serializing it and invalidating the stored byte hash. Trust
+        # boundary: the binding governs its own agents, so runtime-added
+        # extra entries are tolerated; any mutation of a bound agent's
+        # entry (or its absence from the file) is still rejected here, and
+        # again at the semantic equality check below.
         # Documented limitation: Python equality treats 1 == 1.0 and
         # True == 1, so this guard does not detect JSON scalar type drift.
-        if active.get('selections') != selection_payload.get('selections'):
+        if any(bound.get(agent) != file_sel.get(agent) for agent in bound):
             raise ValueError('provider active binding model selections integrity mismatch')
-    if active.get('selections') != selection_payload.get('selections'):
+    if any(bound.get(agent) != file_sel.get(agent) for agent in bound):
         raise ValueError('provider active binding selections mismatch')
     return active
 
