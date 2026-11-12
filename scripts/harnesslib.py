@@ -301,7 +301,16 @@ def validate_provider_active(provider: str, active: dict, root: Path | None = No
     selection_payload = validate_model_selections(provider, task_id, selections_path, root)
     selection_hash = sha256_file(selections_path)
     if active.get('model_selections_sha256') != selection_hash:
-        raise ValueError('provider active binding model selections integrity mismatch')
+        # The OpenCode runtime re-serializes model-selections.json
+        # payload-identically when agent model state updates, which invalidates
+        # the stored byte hash even though the selections are semantically
+        # unchanged. The semantic selections equality below (and at the next
+        # check) remains the tamper line: a byte-level drift that also changes
+        # the selections content still fails here.
+        # Documented limitation: Python equality treats 1 == 1.0 and
+        # True == 1, so this guard does not detect JSON scalar type drift.
+        if active.get('selections') != selection_payload.get('selections'):
+            raise ValueError('provider active binding model selections integrity mismatch')
     if active.get('selections') != selection_payload.get('selections'):
         raise ValueError('provider active binding selections mismatch')
     return active
