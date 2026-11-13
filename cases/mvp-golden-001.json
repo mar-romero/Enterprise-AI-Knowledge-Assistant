@@ -1,0 +1,89 @@
+{
+  "_format_note": "Golden evaluation set schema: top level {'_format_note': str, 'cases': [case]}; case = {case_id, document:{filename(.md/.txt only), content_text}, question, expected:{kind:'hit'|'abstain', expected_locator_chunk_index (int|null), expected_answer_keywords (list[str])}, note (exact token-overlap arithmetic)}. Score = |distinct chunk tokens intersect distinct query tokens| / |distinct query tokens|; tokens = re.findall(r'[a-z0-9]+', text.lower()). Gate (mirrors rag /answer): abstain iff no documents OR no chunks OR best_score < rag.THRESHOLD. Documents seeded via documents.save (content_sha256 = id); locator = f'{content_sha256}--chunk-{n}' with n 1-based over paragraphs split on blank lines.",
+  "cases": [
+    {
+      "case_id": "refund-001",
+      "document": {
+        "filename": "refund-policy.md",
+        "content_text": "Refund policy overview for support staff.\n\nA refund is granted within thirty days when the customer submits a refund request.\n\nEscalations are tracked by the support team lead."
+      },
+      "question": "refund policy within thirty days",
+      "expected": {
+        "kind": "hit",
+        "expected_locator_chunk_index": 2,
+        "expected_answer_keywords": []
+      },
+      "note": "question tokens {refund, policy, within, thirty, days} = 5; chunk-1 intersect = {refund, policy} = 2/5 = 0.4; chunk-2 intersect = {refund, within, thirty, days} = 4/5 = 0.8 >= rag.THRESHOLD 0.5 -> hit; chunk-3 intersect = {} = 0/5 = 0.0."
+    },
+    {
+      "case_id": "onboarding-002",
+      "document": {
+        "filename": "onboarding.md",
+        "content_text": "Onboarding week one: every new hire is paired with an onboarding buddy who walks through account setup on day one."
+      },
+      "question": "onboarding buddy",
+      "expected": {
+        "kind": "hit",
+        "expected_locator_chunk_index": 1,
+        "expected_answer_keywords": []
+      },
+      "note": "question tokens {onboarding, buddy} = 2; chunk-1 intersect = {onboarding, buddy} = 2/2 = 1.0 >= 0.5 -> hit."
+    },
+    {
+      "case_id": "pto-003",
+      "document": {
+        "filename": "pto.md",
+        "content_text": "PTO policy: vacation days accrue monthly for full-time employees."
+      },
+      "question": "am I eligible for sabbatical leave",
+      "expected": {
+        "kind": "hit",
+        "expected_locator_chunk_index": 1,
+        "expected_answer_keywords": []
+      },
+      "note": "designed abstention: question tokens {am, i, eligible, for, sabbatical, leave} = 6; chunk-1 intersect = {for} = 1/6 = 0.166667 < 0.5 -> the runner abstains, but expected.kind is 'hit', so gate_correct is False by design (vocabulary miss must be flagged, not absorbed)."
+    },
+    {
+      "case_id": "abstain-004",
+      "document": {
+        "filename": "facilities.md",
+        "content_text": "Server room badge audit schedule is posted monthly near the loading dock."
+      },
+      "question": "quantum flux capacitor maintenance ritual",
+      "expected": {
+        "kind": "abstain",
+        "expected_locator_chunk_index": null,
+        "expected_answer_keywords": []
+      },
+      "note": "question tokens {quantum, flux, capacitor, maintenance, ritual} = 5; chunk-1 intersect = {} = 0/5 = 0.0 < 0.5 -> abstain."
+    },
+    {
+      "case_id": "boundary-005",
+      "document": {
+        "filename": "alpha.md",
+        "content_text": "alpha stenography"
+      },
+      "question": "alpha zulu",
+      "expected": {
+        "kind": "hit",
+        "expected_locator_chunk_index": 1,
+        "expected_answer_keywords": ["alpha"]
+      },
+      "note": "question tokens {alpha, zulu} = 2; chunk-1 intersect = {alpha} = 1/2 = 0.5 == rag.THRESHOLD 0.5; the gate abstains only when best_score < THRESHOLD, so the boundary case PASSES -> hit; keyword 'alpha' is found in the chunk text."
+    },
+    {
+      "case_id": "compliance-006",
+      "document": {
+        "filename": "compliance.md",
+        "content_text": "Annual requirement: every employee completes security and compliance training plus the escalation drill before the audit cycle.\n\nLeaders review progress quarterly."
+      },
+      "question": "escalation compliance security training requirements",
+      "expected": {
+        "kind": "hit",
+        "expected_locator_chunk_index": 1,
+        "expected_answer_keywords": ["escalation", "compliance", "security"]
+      },
+      "note": "question tokens {escalation, compliance, security, training, requirements} = 5; chunk-1 intersect = {escalation, compliance, security, training} = 4/5 = 0.8 >= 0.5 -> hit ('requirements' plural is absent from the text; token match is exact); chunk-2 intersect = {} = 0/5 = 0.0."
+    }
+  ]
+}
