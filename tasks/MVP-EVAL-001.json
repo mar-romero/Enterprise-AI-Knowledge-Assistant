@@ -1,0 +1,52 @@
+{
+  "id": "MVP-EVAL-001",
+  "description": "backend/app/eval.py + cases: YAML/JSON golden cases (question, expected source section, expected answer keywords); runner scores retrieval hit-rate and answer fidelity against the local retrieval path; CLI producing a JSON report; CI-friendly exit code failing on retrieval hit-rate regression below threshold.",
+  "acceptance_criteria": [
+    "Golden case format documented and >= 5 cases defined incl. an expected-abstain case",
+    "Runner outputs JSON report with per-case retrieval hit and coverage/abstention rates",
+    "Exit code 0/n% threshold configurable; regression gate documented for CI use",
+    "Runner runs offline (local retrieval only) and is deterministic given a fixed index"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": false,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "backend/app/eval.py",
+    "backend/tests/test_eval_runner.py",
+    "cases/mvp-golden-001.json"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "COPILOT-ROADMAP-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/COPILOT-ROADMAP-001.json"
+  },
+  "planning": {
+    "title": "Evaluation harness with golden Q&A cases and regression gate",
+    "size": "S",
+    "dependencies": [
+      "MVP-RAG-001"
+    ],
+    "priority_score": 3.75
+  }
+}

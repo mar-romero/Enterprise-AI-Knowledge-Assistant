@@ -1,0 +1,57 @@
+{
+  "id": "MVP-FRONTEND-001",
+  "description": "frontend/: minimal hand-rolled Next.js (App Router) scaffold - no create-next-app, no injection of unrelated template files: frontend/package.json (pinned deps react/next), frontend/app/layout.tsx (root layout), frontend/app/page.tsx (chat: question input POSTs to backend /answer, renders answer + citations panel with document/section locator + duplicate notice when abstained=true with INSUFFICIENT_EVIDENCE), frontend/app/documents/page.tsx (upload form POSTs multipart to backend /documents + lists metadata incl. sha256/duplicate), frontend/tests/test_smoke.py (scaffold-contract smoke test), frontend/README.md (run instructions, NEXT_PUBLIC_API_BASE_URL env default http://localhost:8000, install/dev commands, known backend endpoints). Minimal inline styling; this unit ships no sign-in screen (user-identity screens are Month-2 scope); no CI. Node/npm availability at implementation time is recorded as evidence; if npm install cannot run offline the implementer records the exact failure and the UI is still delivered code-complete with build verification marked as residual/INSUFFICIENT honestly. The smoke test gives the frontend its OWN fast project test suite: the check-runner derives project root from task files, and a frontend/tests/ placement keeps the deterministic gate inside the frontend project (~0.1s) instead of resolving to the repository root whose full harness suite (~9-10 min measured) hangs under the runner's subprocess stdin model when run detached/captured (documented harness defect, backlog).",
+  "acceptance_criteria": [
+    "Chat page sends question to backend /answer and renders answer plus citations list (doc/locator/score) when abstained=false; renders abstention notice when abstained=true",
+    "Documents page uploads a file (multipart) and lists metadata returned by backend (id, filename, sha256, size, duplicate)",
+    "Minimal manual Next.js scaffold: package.json parses as valid JSON with pinned react/next versions; app/ directory structure is a valid App Router layout (layout.tsx + pages compile under Next's expected tree)",
+    "frontend/tests/test_smoke.py validates the scaffold contract offline (no Node/network needed): package.json parses as JSON; layout.tsx/page.tsx contain the required markers (title, /answer call, abstained handling, citations render); documents page contains /documents call + FormData upload + metadata render; passes under python -m unittest discover -s tests -v and pytest from frontend/",
+    "Each page renders without runtime exceptions in a local build/dev attempt IF node is available; the implementer records the exact npm/node outcome (success or blocked) as durable evidence and documents residual if blocked - chromium/binary network fetches only due to npm install, never from page logic",
+    "README documents install, dev server run, backend base URL env (NEXT_PUBLIC_API_BASE_URL default http://localhost:8000) and known backend endpoints"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": false,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "frontend/package.json",
+    "frontend/app/layout.tsx",
+    "frontend/app/page.tsx",
+    "frontend/app/documents/page.tsx",
+    "frontend/tests/test_smoke.py",
+    "frontend/README.md"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "COPILOT-ROADMAP-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/COPILOT-ROADMAP-001.json"
+  },
+  "planning": {
+    "title": "Minimal Next.js chat UI with sources panel and document list",
+    "size": "M",
+    "dependencies": [
+      "MVP-RAG-001"
+    ],
+    "priority_score": 2.45
+  }
+}

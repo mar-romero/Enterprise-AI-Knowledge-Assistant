@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "discovery_id": "COPILOT-ROADMAP-001",
+  "artifact_type": "domain",
+  "status": "complete",
+  "vocabulary": [
+    {"term": "Tenant", "definition": "A single company workspace; owns Users, Documents, Actions and configuration. MVP runs single-tenant; the model must remain tenant-scoped from day one."},
+    {"term": "User", "definition": "A person authenticated (later via Cognito) within a Tenant; MVP uses an implicit dev user with no auth UI."},
+    {"term": "Document", "definition": "An uploaded file (pdf/md/txt) belonging to exactly one Tenant, with id, filename, sha256, size, uploaded_at metadata."},
+    {"term": "Chunk", "definition": "A retrieval unit produced from a Document, retaining the parent document id and a section/locator identifier."},
+    {"term": "Citation", "definition": "An explicit reference shown to the user tying an Answer to one or more Chunks (document + section + retrieval score)."},
+    {"term": "Answer", "definition": "The assistant's response: either a grounded answer with >=1 Citation, or an abstention (INSUFFICIENT_EVIDENCE) with zero fabricated citations."},
+    {"term": "Abstention", "definition": "The explicit act of refusing to answer when retrieved evidence does not clear the confidence threshold."},
+    {"term": "Controlled Action", "definition": "A state-changing tool call (e.g., create ticket) that requires a validated permission AND an explicit human confirmation before execution."},
+    {"term": "Evaluation Case", "definition": "A golden question with expected source section and/or expected abstention, used to score retrieval and answer fidelity."},
+    {"term": "Evidence Threshold", "definition": "The configured minimum retrieval confidence/evidence verdict under which the system must abstain rather than answer."}
+  ],
+  "relationships": [
+    "Tenant owns many Users; Tenant owns many Documents.",
+    "Document decomposes into many Chunks; Citation references one or more Chunks.",
+    "Answer cites one or more Citations; an Answer without citations must be an Abstention.",
+    "Evaluation Case evaluates one Answer against expected source/abstention.",
+    "Controlled Action is initiated by a User and gated by permission + confirmation."
+  ],
+  "invariants": [
+    "INV1: Every non-abstaining Answer carries at least one Citation pointing to chunks that actually exist in the Tenant's own documents.",
+    "INV2: A Tenant's User can only retrieve from, or cite, Documents owned by that Tenant; cross-tenant retrieval is impossible by construction (enforced in the retrieval/backend layer, never by prompt).",
+    "INV3: No state-changing Action executes without (a) permission validation and (b) explicit user confirmation in the same session.",
+    "INV4: Every LLM call and retrieval records usage/metadata (tokens, cost when available, latency) in logs sufficient for per-operation cost accounting.",
+    "INV5: Answers that reference evidence below the Evidence Threshold are Abstentions; the threshold is configuration, not a prompt instruction.",
+    "INV6: Documents are immutable once registered (content addressable by sha256); updates create new versions rather than mutating in place."
+  ],
+  "open_questions": [
+    {"id": "DQ1", "question": "Section-aware chunking for PDFs in MVP: is paragraph-level chunking with filename+paragraph-id locator acceptable for v1 citations?", "blocking": false}
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "discovery_id": "COPILOT-ROADMAP-001",
+  "artifact_type": "scenarios",
+  "status": "complete",
+  "scenarios": [
+    {
+      "id": "S1",
+      "title": "Grounded answer with citations",
+      "behavior": "Given a Tenant with an uploaded policy document, when a User asks 'What is our refund policy for enterprise customers?', then the Answer is grounded in the Tenant's documents and includes >=1 Citation (document, section locator, retrieval score) and abstained=false."
+    },
+    {
+      "id": "S2",
+      "title": "Abstention on insufficient evidence",
+      "behavior": "Given a Tenant whose documents contain no information about a topic, when a User asks an on-topic-but-uncovered question, then the system returns abstained=true with INSUFFICIENT_EVIDENCE and returns ZERO citations (no fabricated sources)."
+    },
+    {
+      "id": "S3",
+      "title": "Citations always point to real chunks",
+      "behavior": "For any Answer, every Citation references an existing Chunk of that Tenant's Documents; the evaluation runner rejects any answer citing absent entities."
+    },
+    {
+      "id": "S4",
+      "title": "New document becomes retrievable",
+      "behavior": "Given an uploaded Document (POST /documents), when it completes registration, then a subsequent retrieval over its domain content returns chunks of that document (proven by offline test with fixed index)."
+    },
+    {
+      "id": "S5",
+      "title": "Controlled action requires confirmation (Month 3 contract)",
+      "behavior": "When a User requests 'create a ticket', the system validates the permission, then requires explicit confirmation; if the confirmation is absent the Action must not execute; if permission fails, the Action must not execute.",
+      "note": "Contract-level scenario now; implementation arrives with COPILOT-PORTFOLIO"
+    },
+    {
+      "id": "S6",
+      "title": "Cost and latency are recorded per operation",
+      "behavior": "Every LLM call and retrieval records usage (tokens, latency; cost when available) such that a per-operation cost report can be produced later (INV4)."
+    },
+    {
+      "id": "S7",
+      "title": "Evaluation regression gate",
+      "behavior": "Given the golden case set, when the retrieval path changes, running the evaluation runner produces a JSON report and exits non-zero if hit-rate degrades below the configured threshold."
+    },
+    {
+      "id": "S8",
+      "title": "Health is honest",
+      "behavior": "GET /health returns service status/version without external calls; never reports healthy dependencies it did not check."
+    }
+  ],
+  "open_questions": []
+}

@@ -1,0 +1,56 @@
+{
+  "id": "MVP-INGEST-001",
+  "description": "backend/app/documents.py: POST /documents (multipart upload: pdf/md/txt, max size 5 MB by configurable constant), stores content via a StorageBackend abstraction (LocalDirectoryStorage for dev with tmp-dir tests; S3-storage stub documented, not integration-tested in MVP), persists a document registry as a JSON index (id, filename, sha256, size, uploaded_at, duplicate flag) and GET /documents list returning metadata; duplicate uploads with the same sha256 return the existing document record with duplicate=true and do not create registry copies. Routes registered on the main FastAPI app in backend/app/main.py via include_router; multipart upload requires python-multipart pinned in backend/pyproject.toml. Local-first, tests offline with tmp dirs (no network).",
+  "acceptance_criteria": [
+    "POST /documents accepts pdf/md/txt, rejects unsupported extensions (400) and over-cap size (413), returns document id and metadata",
+    "GET /documents lists registered documents with metadata including sha256 and duplicate flag; identical sha256 re-upload is deduplicated (no new registry entry, duplicate=true response)",
+    "StorageBackend abstraction interface with LocalDirectoryStorage implementation covered by tmp-dir tests (content stored and retrievable; registry JSON persisted)",
+    "S3 storage stub documented in README but not required to be integration-tested in MVP",
+    "Deterministic test suite passes offline via python -m unittest discover -s tests -v from backend/ (and pytest); java-free, network-free",
+    "python-multipart added as pinned dependency in backend/pyproject.toml and documented in backend/README Setup note"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": false,
+    "migration": false,
+    "persistence": true,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "backend/app/documents.py",
+    "backend/app/main.py",
+    "backend/tests/test_documents.py",
+    "backend/pyproject.toml",
+    "backend/README.md"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "COPILOT-ROADMAP-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/COPILOT-ROADMAP-001.json"
+  },
+  "planning": {
+    "title": "Document upload API with storage abstraction",
+    "size": "M",
+    "dependencies": [
+      "MVP-BACKEND-001"
+    ],
+    "priority_score": 3.6
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "COPILOT-MVP",
+  "type": "EPIC",
+  "title": "Month 1 - MVP: functional loop",
+  "description": "Weeks 1-2: repo backend, FastAPI API, LLM integration, document loading. Weeks 3-4: RAG with cited answers, evaluation harness, basic frontend, first demo. Deliverable: upload test documents and consult them from an interface. Features: backend bootstrap, LLM client, document ingest, RAG+abstention, eval harness, minimal chat UI.",
+  "discovery_id": "COPILOT-ROADMAP-001"
+}

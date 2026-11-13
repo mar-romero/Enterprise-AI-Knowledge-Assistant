@@ -1,0 +1,7 @@
+{
+  "id": "COPILOT-PROD",
+  "type": "EPIC",
+  "title": "Month 2 - Production: prototype to enterprise solution",
+  "description": "Weeks 5-6: authentication, tenant separation, protection against unauthorized access, security tests. Weeks 7-8: AWS deployment with Terraform/CDK IaC, CI/CD, evaluations gate, logs and metrics. Deliverable: deployed, evaluated application with verifiable security controls. Future sprint planning will materialize its tasks only after this epic's discovery-approved state is used for sprint-planning.",
+  "discovery_id": "COPILOT-ROADMAP-001"
+}

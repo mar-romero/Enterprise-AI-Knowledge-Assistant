@@ -1,0 +1,55 @@
+{
+  "id": "MVP-RAG-001",
+  "description": "backend/app/rag.py: given a question, retrieve relevant chunks (chosen backend contract from RAG-BACKEND-SPIKE decision; local lexical/embedding retrieval as the local/testing path), build grounded answer with section-level citations, and abstain with INSUFFICIENT_EVIDENCE when retrieval confidence/verdict is below threshold. POST /answer endpoint with {question} returning {answer, citations[], abstained}. Guarded by evaluation suite.",
+  "acceptance_criteria": [
+    "POST /answer returns answer plus non-empty citations (doc id, section) for a in-scope golden question from the local retrieval path (offline tests)",
+    "Abstention: when retrieval yields no confident evidence, returns abstained=true with INSUFFICIENT_EVIDENCE and no fabricated citations; unit tests cover the threshold",
+    "Citations carry document id/section and retrieval score; answers never cite absent documents",
+    "Local retrieval implementation and tests run offline; Bedrock KB integration path behind interface and covered by integration flag if enabled",
+    "Existing document ingest integrated: newly uploaded doc becomes retrievable in tests"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": true,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "backend/app/rag.py",
+    "backend/app/main.py",
+    "backend/tests/test_rag.py",
+    "backend/README.md"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "COPILOT-ROADMAP-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/COPILOT-ROADMAP-001.json"
+  },
+  "planning": {
+    "title": "RAG answer flow with citations and abstention",
+    "size": "L",
+    "dependencies": [
+      "MVP-LLM-001",
+      "MVP-INGEST-001"
+    ],
+    "priority_score": 4.4
+  }
+}

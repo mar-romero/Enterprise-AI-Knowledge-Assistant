@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "discovery_id": "BINDING-EXTRA-AGENT-001",
+  "status": "approved",
+  "classification": "TASK",
+  "title": "Binding validation: tolerate runtime-managed extra agent entries in model-selections",
+  "refined_problem": "Diagnosed with a deterministic one-liner diff: model-selections.json contains an extra 'verifier' agent entry that the OpenCode runtime persists (its own multi-task agent-model state), while the active binding for MVP-EVAL-001 records only its own 6 routed agents. validate_provider_active compares the whole lists, so the runtime's extra entry fails the semantic equality and deadlocks receipt_review.prepare. The binding is the authority for its own task's agents; entries for agents outside the binding belong to the runtime's cross-task state and must not invalidate it.",
+  "original_request": {
+    "language": "es",
+    "text": "diagnostic output: ACTIVE agents [debugger, explorer, implementer, planner, reviewer, test-designer] vs FILE agents [same + verifier]; DIFF AGENT: verifier; file task_id MVP-EVAL-001 schema 2"
+  },
+  "target_users": [
+    "Harness operators with live OpenCode sessions",
+    "Orchestrator agents closing tasks"
+  ],
+  "outcomes": [
+    "validate_provider_active accepts a model-selections file whose EXTRA agent entries (agents not present in the binding) belong to the runtime, while still rejecting any modification of the binding's own agent entries",
+    "MVP-EVAL-001 unblocks and closes"
+  ],
+  "success_metrics": [
+    "New regression tests: extra-agent file accepted; bound-agent mutation with extra-agent file rejected",
+    "Backend suite passes"
+  ],
+  "scope": {
+    "in": [
+      "scripts/harnesslib.py guarded-raise branch: compare per-agent (agent-keyed dicts) filtered to the binding's own agents",
+      "backend/tests/test_binding_drift.py: extend with T4 (extra verifier entry accepted) and T5 (extra entry + bound-agent mutation rejected)"
+    ],
+    "out": [
+      "Plugin TypeScript changes",
+      "Policy changes",
+      "Removal of the runtime's own file ownership (structural redesign, backlog)"
+    ]
+  },
+  "mvp": {
+    "goal": "Unblock MVP-EVAL-001 closure without weakening tamper detection over the binding's own agents.",
+    "includes": [
+      "Per-agent comparison filtered to binding agents",
+      "Two regression tests"
+    ],
+    "excludes": [
+      "Structural redesign of the dual-writer path"
+    ]
+  },
+  "success_metrics_note": "Deterministic tests only.",
+  "assumptions": [
+    "The binding's own agent entries are the tamper surface; extra runtime entries are cross-task state",
+    "An attacker able to write the file can also rewrite active-task.json (same trust domain), so per-agent comparison does not materially weaken integrity"
+  ],
+  "open_questions": [],
+  "challenges": [
+    "Keep the comparison strict for bound agents: any field mutation must reject"
+  ],
+  "work_items": [],
+  "tasks": [
+    {
+      "id": "BINDING-EXTRA-001",
+      "title": "Per-agent binding comparison tolerating runtime extra agents",
+      "description": "In scripts/harnesslib.py validate_provider_active guarded-raise branch: build agent-keyed dicts from active['selections'] and selection_payload['selections']; raise the integrity error only if any agent present in the binding's selections differs from (or is missing in) the file payload; extra file-side agents (runtime state) are tolerated. Extend backend/tests/test_binding_drift.py with T4 (file includes an extra 'verifier' entry with model 'other/verifier' -> accepted) and T5 (extra entry PLUS a bound-agent model_id mutation -> still rejected). Update the code comment. Existing tests must pass.",
+      "acceptance_criteria": [
+        "validate_provider_active accepts a file whose selections include extra agents beyond the binding's, provided every bound agent matches exactly",
+        "validate_provider_active still rejects a file where any bound agent entry is modified or missing",
+        "T4 and T5 added to backend/tests/test_binding_drift.py and pass",
+        "Backend suite passes; whole diff limited to scripts/harnesslib.py + backend/tests/test_binding_drift.py",
+        "Comment documents the dual-writer reality (activation vs runtime state) and the per-agent trust boundary"
+      ],
+      "dependencies": [],
+      "files": [
+        "scripts/harnesslib.py",
+        "backend/tests/test_binding_drift.py"
+      ],
+      "size": "S",
+      "value": 5,
+      "dependency_unlock": 4,
+      "risk_reduction": 4,
+      "urgency": 5,
+      "confidence": 4,
+      "risk_factors": {}
+    }
+  ],
+  "research_rdd": {
+    "mode": "none",
+    "ready": true,
+    "reason": "Deterministic one-liner diagnosis already produced the exact divergence (extra verifier entry)."
+  },
+  "approval_attestation": {
+    "approved_by": "repository owner in harness session",
+    "date": "2026-11-12",
+    "recorded_decisions": [
+      "owner requested unblock; diagnosis completed with deterministic evidence",
+      "per-agent trust boundary: the binding governs its own agents; runtime extras tolerated; structural dual-writer redesign recorded as backlog"
+    ]
+  }
+}

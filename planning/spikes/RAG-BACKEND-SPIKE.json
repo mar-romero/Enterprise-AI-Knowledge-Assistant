@@ -1,0 +1,7 @@
+{
+  "id": "RAG-BACKEND-SPIKE",
+  "type": "SPIKE",
+  "title": "RAG backend selection spike (Bedrock Knowledge Bases vs custom)",
+  "description": "Bounded investigation before MVP-RAG-001: build a minimal retriever interface prototype and compare Bedrock Knowledge Bases (native retrieval+generation+citations) against a custom RAG (embeddings + vector index) on cost per query, index update flow/latency and citation controllability. Output: decision recorded in planning/decisions + program the MVP-RAG-001 task with the chosen contract. Time-boxes: 1 evening session; if defer needed, default to Bedrock KBs for v1 with the local retrieval contract as fallback for testing.",
+  "discovery_id": "COPILOT-ROADMAP-001"
+}

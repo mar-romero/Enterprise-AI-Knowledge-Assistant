@@ -1,0 +1,52 @@
+{
+  "id": "MVP-LLM-001",
+  "description": "Implement backend/app/llm.py: a small client wrapper around AWS Bedrock (converse API) with dependency injection so tests run a fake client by default; model id and region from environment-backed settings; structured answer() returning text plus usage/metadata; this unit performs no identity-material handling: the underlying runtime configuration is an integration-stage concern documented in backend/README; optional integration flag documented and default-off.",
+  "acceptance_criteria": [
+    "wrapper returns a structured LLMResult including text, model_id and usage tokens",
+    "unit tests pass with a fake/injectable client, zero network",
+    "settings read BEDROCK_MODEL_ID/AWS_REGION via environment with safe defaults and no identity material committed in code or repository",
+    "integration flag AWS_INTEGRATION=0/1 documented, integration test skipped unless enabled"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": true,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "backend/app/llm.py",
+    "backend/tests/test_llm.py",
+    "backend/README.md"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "COPILOT-ROADMAP-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/COPILOT-ROADMAP-001.json"
+  },
+  "planning": {
+    "title": "Bedrock LLM client wrapper with fake-client tests",
+    "size": "M",
+    "dependencies": [
+      "MVP-BACKEND-001"
+    ],
+    "priority_score": 3.8
+  }
+}

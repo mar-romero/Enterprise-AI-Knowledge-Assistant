@@ -1,0 +1,7 @@
+{
+  "id": "COPILOT-PORTFOLIO",
+  "type": "EPIC",
+  "title": "Month 3 - Portfolio: agents, integration and professional demo",
+  "description": "Weeks 9-10: demo ticket system integration with confirmation-gated actions. Weeks 11-12: optimization, architecture documentation, security tests, cost analysis. Week 13: English technical demo and business-case presentation. Deliverable: documented repo, demo, metrics, justified architecture decisions.",
+  "discovery_id": "COPILOT-ROADMAP-001"
+}

@@ -1,0 +1,13 @@
+{
+  "id": "COPILOT-SPRINT-001",
+  "goal": "Weeks 1-2: healthy backend + LLM wrapper + document ingest (fast, low-risk, unblocks everything else).",
+  "capacity_units": 12,
+  "task_ids": [
+    "MVP-BACKEND-001",
+    "MVP-LLM-001",
+    "MVP-INGEST-001"
+  ],
+  "week_label": "Weeks 1-2 (Month 1 - MVP)",
+  "discovery_id": "COPILOT-ROADMAP-001",
+  "used_capacity_units": 8
+}

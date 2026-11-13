@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "discovery_id": "COPILOT-ROADMAP-001",
+  "artifact_type": "decisions",
+  "status": "approved",
+  "decisions": [
+    {
+      "id": "D1",
+      "title": "Product name and positioning",
+      "options": ["Enterprise AI Knowledge Assistant (repo name)", "Enterprise AI Copilot"],
+      "choice": "Enterprise AI Copilot",
+      "rationale": "Owner decision (session): shorter, product-oriented; README already published with this identity.",
+      "reversibility": "Fully reversible (renaming later is documentation work); recorded in README-BOOTSTRAP-001 discovery."
+    },
+    {
+      "id": "D2",
+      "title": "MVP retrieval path: Bedrock Knowledge Bases first, backend-agnostic interface",
+      "options": ["Bedrock KBs (managed retrieval+generation+citations)", "Custom RAG (embeddings + own index)", "Both behind one interface"],
+      "choice": "Both behind one interface, Bedrock-KBs-first for the integrated path, local lexical/embedding retrieval as the offline default for tests",
+      "rationale": "Bedrock KBs offer the fastest credible cited-answer path (F1) while keeping the retriever contract backend-agnostic defuses lock-in criticism; tests must run offline, so the local path is the test default.",
+      "reversibility": "High: RAG-BACKEND-SPIKE re-validates immediately before MVP-RAG-001; swapping backends touches only the retriever adapter."
+    },
+    {
+      "id": "D3",
+      "title": "Backend stack: Python + FastAPI with pydantic settings and pytest",
+      "choice": "FastAPI (+ uvicorn), pydantic settings, pytest, injectable clients",
+      "rationale": "Owner stack (5 years experience, target competences: REST, auth, validation, async, tests); harness already tests Python tooling smoothly.",
+      "reversibility": "Reversible at MVP scale; later changes would be migration work, so locked for Month 1."
+    },
+    {
+      "id": "D4",
+      "title": "Frontend stack: Next.js minimal (chat + sources + doc list)",
+      "choice": "React/Next.js minimal pages, no auth UI in MVP",
+      "rationale": "Owner plan (React/Next.js); minimal UI serves demos and dogfooding only for Month 1.",
+      "reversibility": "High."
+    },
+    {
+      "id": "D5",
+      "title": "IaC choice deferred to Month-2 with Terraform preferred",
+      "choice": "Terraform first (defer final choice), evaluated against CDK at deployment time",
+      "rationale": "Owner plan states the choice is made after comparing cost/complexity/requisites; Month-1 has no deployment surface.",
+      "reversibility": "Decision is explicitly deferred and reversible now; will harden at COPILOT-PROD sprint planning."
+    },
+    {
+      "id": "D6",
+      "title": "Evaluation is a gate, not a nice-to-have",
+      "choice": "Golden Q&A set + JSON report + exit-code threshold integrated in CI from Month 1 (offline path)",
+      "rationale": "Owner differentiators demand measurable answer fidelity and regression protection (F2); the harness culture also demands deterministic evidence.",
+      "reversibility": "Thresholds are configuration."
+    },
+    {
+      "id": "D7",
+      "title": "Offline-first testing policy",
+      "choice": "All Month-1 tests run offline with fake clients/storage; AWS integration tests gated behind explicit flags",
+      "rationale": "Deterministic evidence culture; zero-cost MVP; faster iteration in 8h/week cadence.",
+      "reversibility": "Integration tests added per-module when AWS access is available."
+    }
+  ],
+  "open_questions": [],
+  "approval_attestation": {
+    "approved_by": "repository owner in harness session",
+    "date": "2026-11-03",
+    "recorded_decisions": [
+      "owner explicitly requested sprints/spec/roadmap ('hace los sprint o spec o lo que quieras que sea necesario para empezar el proyecto y que este todo definido')",
+      "owner set the prioritization rule: small reliable product before incomplete features",
+      "owner pre-approved Bedrock-first retrieval with later comparison (original plan text)",
+      "2026-11-05 SPIKE RESOLVED (D8): RAG-BACKEND-SPIKE three open questions resolved offline by repo-fact analysis: (S1) local retrieval = deterministic lexical term-overlap scoring, zero deps; chunks = paragraphs split on blank lines, locator '<sha256>--chunk-<n>' (PDF text extraction deferred: only .md/.txt retrievable in MVP, documented in README); (S2) abstention contract = retrieval-only gate BEFORE the LLM: no chunks or best score < THRESHOLD constant -> abstained=true INSUFFICIENT_EVIDENCE with zero citations and no LLM call; passing evidence -> grounded user prompt composed from cited chunks; (S3) citations = {pointer to doc id/sha256, filename, chunk locator, score}; no section numbers in MVP; (S4) Retriever Protocol (retrieve(question, k) -> list[Chunk]) so Bedrock Knowledge Bases slots in later without changing /answer logic; BedrockLLM.answer has no system kwarg so grounding instructions are folded into the user prompt (llm.py out of this task's file surface). Threshold/TopK values are implementation constants fixed and tested by MVP-RAG-001."
+    ]
+  }
+}

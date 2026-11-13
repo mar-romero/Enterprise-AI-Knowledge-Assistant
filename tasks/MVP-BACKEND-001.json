@@ -1,0 +1,54 @@
+{
+  "id": "MVP-BACKEND-001",
+  "description": "Create the FastAPI application skeleton (backend/app) with: /health endpoint returning service status/version; pydantic settings loaded from environment (APP port/prefix); unittest-discoverCompatible pytest suite (unittest.TestCase style, runnable by both pytest and python -m unittest discover) for /health asserting 200 OK and version field; no external calls; pinned dependencies recorded in backend/pyproject.toml.",
+  "acceptance_criteria": [
+    "GET /health returns 200 with JSON containing status and version fields",
+    "Test suite for /health passes locally in unittest-discover form (python -m unittest discover -s tests -v from backend/) and is also runnable via pytest; pure pytest-only styles that unittest discovery would skip silently are not accepted",
+    "No AWS/network calls from the health endpoint or its tests",
+    "Python package layout with pinned dependencies in backend/pyproject.toml and README development section with run instructions",
+    "Tests import the app via explicit sys.path insertion of the backend directory so they pass under the deterministic checker's sanitized environment"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": false,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "backend/app/main.py",
+    "backend/app/__init__.py",
+    "backend/tests/test_health.py",
+    "backend/tests/__init__.py",
+    "backend/pyproject.toml",
+    "backend/README.md"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "COPILOT-ROADMAP-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/COPILOT-ROADMAP-001.json"
+  },
+  "planning": {
+    "title": "FastAPI backend skeleton with /health and tests",
+    "size": "S",
+    "dependencies": [],
+    "priority_score": 4.15
+  }
+}

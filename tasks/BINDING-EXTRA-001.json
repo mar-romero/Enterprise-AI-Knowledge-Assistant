@@ -1,0 +1,50 @@
+{
+  "id": "BINDING-EXTRA-001",
+  "description": "In scripts/harnesslib.py validate_provider_active guarded-raise branch: build agent-keyed dicts from active['selections'] and selection_payload['selections']; raise the integrity error only if any agent present in the binding's selections differs from (or is missing in) the file payload; extra file-side agents (runtime state) are tolerated. Extend backend/tests/test_binding_drift.py with T4 (file includes an extra 'verifier' entry with model 'other/verifier' -> accepted) and T5 (extra entry PLUS a bound-agent model_id mutation -> still rejected). Update the code comment. Existing tests must pass.",
+  "acceptance_criteria": [
+    "validate_provider_active accepts a file whose selections include extra agents beyond the binding's, provided every bound agent matches exactly",
+    "validate_provider_active still rejects a file where any bound agent entry is modified or missing",
+    "T4 and T5 added to backend/tests/test_binding_drift.py and pass",
+    "Backend suite passes; whole diff limited to scripts/harnesslib.py + backend/tests/test_binding_drift.py",
+    "Comment documents the dual-writer reality (activation vs runtime state) and the per-agent trust boundary"
+  ],
+  "risk_factors": {
+    "touches_auth": false,
+    "touches_production": false,
+    "uses_secrets": false,
+    "destructive_operation": false,
+    "irreversible_change": false,
+    "security_boundary": false,
+    "schema_change": false,
+    "database_change": false,
+    "concurrency": false,
+    "financial": false,
+    "external_contract": false,
+    "migration": false,
+    "persistence": false,
+    "important_calculation": false,
+    "bug_fix": false
+  },
+  "files": [
+    "scripts/harnesslib.py",
+    "backend/tests/test_binding_drift.py"
+  ],
+  "tags": [
+    "derived-work",
+    "product-discovery"
+  ],
+  "origin": {
+    "kind": "derived_from_approved_discovery",
+    "discovery_id": "BINDING-EXTRA-AGENT-001",
+    "project_id": null,
+    "parent_id": null,
+    "source_language": "es",
+    "source_request_preserved_at": "planning/discovery/BINDING-EXTRA-AGENT-001.json"
+  },
+  "planning": {
+    "title": "Per-agent binding comparison tolerating runtime extra agents",
+    "size": "S",
+    "dependencies": [],
+    "priority_score": 4.45
+  }
+}

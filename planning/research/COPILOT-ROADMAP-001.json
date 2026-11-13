@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "discovery_id": "COPILOT-ROADMAP-001",
+  "artifact_type": "research",
+  "status": "complete",
+  "sources": [
+    {"id": "OWNER-PLAN", "title": "Owner 90-day project brief (session input, 2026-11-03)", "kind": "owner_instructions"},
+    {"id": "AWS-BEDROCK-KBS", "title": "AWS Bedrock User Guide - Knowledge Bases (retrieval and response generation with citations)", "kind": "official_docs", "verification_status": "to_verify_in_implementation"},
+    {"id": "AWS-BEDROCK-CONVERSE", "title": "AWS Bedrock Converse API (messages, citations, tool use)", "kind": "official_docs", "verification_status": "to_verify_in_implementation"},
+    {"id": "AWS-WA-AGENTIC-LENS", "title": "AWS Well-Architected - Agentic AI Lens (observability, cost, evaluation guidance)", "kind": "official_docs", "verification_status": "to_verify_in_implementation"}
+  ],
+  "findings": [
+    {"id": "F1", "source": "AWS-BEDROCK-KBS", "finding": "Bedrock Knowledge Bases pairs retrieval with response generation and can attach source citations for the retrieved fragments; this makes it the fastest credible path to cited answers, while a custom RAG gives full control of index/n penalties and abstention thresholds.", "decision_impact": "MVP-RAG-001 contract must allow both retrieval backends behind one interface.", "uncertainty": "citation granularity (section vs chunk) and cost per query not pinned yet - verified during RAG-BACKEND-SPIKE."},
+    {"id": "F2", "source": "AWS-WA-AGENTIC-LENS", "finding": "Agentic AI guidance targets per-operation visibility: latency, tokens/cost per call and guardrails, and explicit evaluation of retrieval quality and generation fidelity for RAG systems.", "decision_impact": "evaluation harness MVP-EVAL-001 and per-operation usage logging are Month-1/2 requirements, not afterthoughts."},
+    {"id": "F3", "source": "AWS-BEDROCK-CONVERSE", "finding": "The Bedrock Converse API abstracts model specifics and returns token usage; a thin injectable wrapper over it keeps tests offline with a fake client.", "decision_impact": "MVP-LLM-001 wrapper must be dependency-injectable and offline-testable."},
+    {"id": "F4", "source": "OWNER-PLAN", "finding": "The owner prioritizes a small reliable product over incomplete features and accepts Bedrock-first retrieval for v1 with later comparison against custom RAG.", "decision_impact": "RAG-BACKEND-SPIKE is time-boxed to one evening; default fallback is Bedrock-KBs-for-v1."}
+  ],
+  "assumptions": [
+    "Local development does NOT require AWS credentials (fake/mocked clients by default); AWS costs are only material from Month 2 and eval integration runs",
+    "Citations will reference document filename + section/chunk id; exact 'Section 4.2'-style semantics arrive from parsed document structure",
+    "Bedrock region availability for target models is assumed; actual region/model id chosen at integration time"
+  ],
+  "contrary_evidence": [
+    "Custom RAG proponents argue Bedrock-KB-first creates lock-in and hides retrieval internals; countered by requirement F4 (orintent/reliability first) and by keeping the retriever interface backend-agnostic",
+    "Over-tuned abstention can silence valid answers; countered by golden-case evaluation (MVP-EVAL-001) setting explicit thresholds and revisiting them"
+  ],
+  "open_questions": [
+    {"id": "Q1", "question": "Cost ceiling and region for Month-2 deployment (cost per query for KBs not pinned)?", "blocking": false},
+    {"id": "Q2", "question": "Citation granularity achievable with parsed sections in MVP documents (PDF section detection quality)?", "blocking": false}
+  ]
+}
